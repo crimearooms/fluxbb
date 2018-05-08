@@ -53,7 +53,7 @@ else if ($action == 'markread')
 
 	check_csrf($_GET['csrf_token']);
 
-	$db->query('UPDATE '.$db->prefix.'users SET last_visit='.$pun_user['logged'].' WHERE id='.$pun_user['id']) or error('Unable to update user last visit data', __FILE__, __LINE__, $db->error());
+	$db->query('UPDATE user SET last_visit='.$pun_user['logged'].' WHERE id='.$pun_user['id']) or error('Unable to update user last visit data', __FILE__, __LINE__, $db->error());
 
 	// Reset tracked topics
 	set_tracked_topics(null);
@@ -91,7 +91,7 @@ else if (isset($_GET['email']))
 	if ($recipient_id < 2)
 		message($lang_common['Bad request'], false, '404 Not Found');
 
-	$result = $db->query('SELECT username, email, email_setting FROM '.$db->prefix.'users WHERE id='.$recipient_id) or error('Unable to fetch user info', __FILE__, __LINE__, $db->error());
+	$result = $db->query('SELECT username, email, email_setting FROM user WHERE id='.$recipient_id) or error('Unable to fetch user info', __FILE__, __LINE__, $db->error());
 	if (!$db->num_rows($result))
 		message($lang_common['Bad request'], false, '404 Not Found');
 
@@ -138,7 +138,7 @@ else if (isset($_GET['email']))
 
 		pun_mail($recipient_email, $mail_subject, $mail_message, $pun_user['email'], $pun_user['username']);
 
-		$db->query('UPDATE '.$db->prefix.'users SET last_email_sent='.time().' WHERE id='.$pun_user['id']) or error('Unable to update user', __FILE__, __LINE__, $db->error());
+		$db->query('UPDATE user SET last_email_sent='.time().' WHERE id='.$pun_user['id']) or error('Unable to update user', __FILE__, __LINE__, $db->error());
 
 		// Try to determine if the data in redirect_url is valid (if not, we redirect to index.php after the email is sent)
 		$redirect_url = validate_redirect($_POST['redirect_url'], 'index.php');
@@ -260,7 +260,7 @@ else if (isset($_GET['report']))
 			}
 		}
 
-		$db->query('UPDATE '.$db->prefix.'users SET last_report_sent='.time().' WHERE id='.$pun_user['id']) or error('Unable to update user', __FILE__, __LINE__, $db->error());
+		$db->query('UPDATE user SET last_report_sent='.time().' WHERE id='.$pun_user['id']) or error('Unable to update user', __FILE__, __LINE__, $db->error());
 
 		redirect('viewforum.php?id='.$forum_id, $lang_misc['Report redirect']);
 	}

@@ -802,7 +802,7 @@ switch ($stage)
 			// Groups are almost the same as 1.2:
 			// unverified:	32000 -> 0
 
-			$db->query('UPDATE '.$db->prefix.'users SET group_id = 0 WHERE group_id = 32000') or error('Unable to update unverified users', __FILE__, __LINE__, $db->error());
+			$db->query('UPDATE user SET group_id = 0 WHERE group_id = 32000') or error('Unable to update unverified users', __FILE__, __LINE__, $db->error());
 		}
 		else if (strpos($cur_version, '1.3') === 0)
 		{
@@ -829,25 +829,25 @@ switch ($stage)
 
 			// move the mod group to a temp place
 			$db->query('UPDATE '.$db->prefix.'groups SET g_id = '.$temp_id.' WHERE g_id = '.$mod_gid) or error('Unable to update group ID', __FILE__, __LINE__, $db->error());
-			$db->query('UPDATE '.$db->prefix.'users SET group_id = '.$temp_id.' WHERE group_id = '.$mod_gid) or error('Unable to update users group ID', __FILE__, __LINE__, $db->error());
+			$db->query('UPDATE user SET group_id = '.$temp_id.' WHERE group_id = '.$mod_gid) or error('Unable to update users group ID', __FILE__, __LINE__, $db->error());
 			$db->query('UPDATE '.$db->prefix.'forum_perms SET group_id = '.$temp_id.' WHERE group_id = '.$mod_gid) or error('Unable to forum_perms group ID', __FILE__, __LINE__, $db->error());
 			if ($member_gid == $mod_gid) $member_gid = $temp_id;
 
 			// move whoever is in 3 to a spare slot
 			$db->query('UPDATE '.$db->prefix.'groups SET g_id = '.$mod_gid.' WHERE g_id = 3') or error('Unable to update group ID', __FILE__, __LINE__, $db->error());
-			$db->query('UPDATE '.$db->prefix.'users SET group_id = '.$mod_gid.' WHERE group_id = 3') or error('Unable to update users group ID', __FILE__, __LINE__, $db->error());
+			$db->query('UPDATE user SET group_id = '.$mod_gid.' WHERE group_id = 3') or error('Unable to update users group ID', __FILE__, __LINE__, $db->error());
 			$db->query('UPDATE '.$db->prefix.'forum_perms SET group_id = '.$mod_gid.' WHERE group_id = 3') or error('Unable to forum_perms group ID', __FILE__, __LINE__, $db->error());
 			if ($member_gid == 3) $member_gid = $mod_gid;
 
 			// move guest to 3
 			$db->query('UPDATE '.$db->prefix.'groups SET g_id = 3 WHERE g_id = 2') or error('Unable to update group ID', __FILE__, __LINE__, $db->error());
-			$db->query('UPDATE '.$db->prefix.'users SET group_id = 3 WHERE group_id = 2') or error('Unable to update users group ID', __FILE__, __LINE__, $db->error());
+			$db->query('UPDATE user SET group_id = 3 WHERE group_id = 2') or error('Unable to update users group ID', __FILE__, __LINE__, $db->error());
 			$db->query('UPDATE '.$db->prefix.'forum_perms SET group_id = 3 WHERE group_id = 2') or error('Unable to forum_perms group ID', __FILE__, __LINE__, $db->error());
 			if ($member_gid == 2) $member_gid = 3;
 
 			// move mod group in temp place to 2
 			$db->query('UPDATE '.$db->prefix.'groups SET g_id = 2 WHERE g_id = '.$temp_id) or error('Unable to update group ID', __FILE__, __LINE__, $db->error());
-			$db->query('UPDATE '.$db->prefix.'users SET group_id = 2 WHERE group_id = '.$temp_id) or error('Unable to update users group ID', __FILE__, __LINE__, $db->error());
+			$db->query('UPDATE user SET group_id = 2 WHERE group_id = '.$temp_id) or error('Unable to update users group ID', __FILE__, __LINE__, $db->error());
 			$db->query('UPDATE '.$db->prefix.'forum_perms SET group_id = 2 WHERE group_id = '.$temp_id) or error('Unable to forum_perms group ID', __FILE__, __LINE__, $db->error());
 			if ($member_gid == $temp_id) $member_gid = 2;
 
@@ -856,17 +856,17 @@ switch ($stage)
 			{
 				// move members to temp place
 				$db->query('UPDATE '.$db->prefix.'groups SET g_id = '.$temp_id.' WHERE g_id = '.$member_gid) or error('Unable to update group ID', __FILE__, __LINE__, $db->error());
-				$db->query('UPDATE '.$db->prefix.'users SET group_id = '.$temp_id.' WHERE group_id = '.$member_gid) or error('Unable to update users group ID', __FILE__, __LINE__, $db->error());
+				$db->query('UPDATE user SET group_id = '.$temp_id.' WHERE group_id = '.$member_gid) or error('Unable to update users group ID', __FILE__, __LINE__, $db->error());
 				$db->query('UPDATE '.$db->prefix.'forum_perms SET group_id = '.$temp_id.' WHERE group_id = '.$member_gid) or error('Unable to forum_perms group ID', __FILE__, __LINE__, $db->error());
 
 				// move whoever is in 4 to members place
 				$db->query('UPDATE '.$db->prefix.'groups SET g_id = '.$member_gid.' WHERE g_id = 4') or error('Unable to update group ID', __FILE__, __LINE__, $db->error());
-				$db->query('UPDATE '.$db->prefix.'users SET group_id = '.$member_gid.' WHERE group_id = 4') or error('Unable to update users group ID', __FILE__, __LINE__, $db->error());
+				$db->query('UPDATE user SET group_id = '.$member_gid.' WHERE group_id = 4') or error('Unable to update users group ID', __FILE__, __LINE__, $db->error());
 				$db->query('UPDATE '.$db->prefix.'forum_perms SET group_id = '.$member_gid.' WHERE group_id = 4') or error('Unable to forum_perms group ID', __FILE__, __LINE__, $db->error());
 
 				// move members in temp place to 4
 				$db->query('UPDATE '.$db->prefix.'groups SET g_id = 4 WHERE g_id = '.$temp_id) or error('Unable to update group ID', __FILE__, __LINE__, $db->error());
-				$db->query('UPDATE '.$db->prefix.'users SET group_id = 4 WHERE group_id = '.$temp_id) or error('Unable to update users group ID', __FILE__, __LINE__, $db->error());
+				$db->query('UPDATE user SET group_id = 4 WHERE group_id = '.$temp_id) or error('Unable to update users group ID', __FILE__, __LINE__, $db->error());
 				$db->query('UPDATE '.$db->prefix.'forum_perms SET group_id = 4 WHERE group_id = '.$temp_id) or error('Unable to forum_perms group ID', __FILE__, __LINE__, $db->error());
 			}
 
@@ -1010,7 +1010,7 @@ switch ($stage)
 		}
 
 		// Move any users with the old unverified status to their new group
-		$db->query('UPDATE '.$db->prefix.'users SET group_id=0 WHERE group_id=32000') or error('Unable to move unverified users', __FILE__, __LINE__, $db->error());
+		$db->query('UPDATE user SET group_id=0 WHERE group_id=32000') or error('Unable to move unverified users', __FILE__, __LINE__, $db->error());
 
 		// Add the ban_creator column to the bans table
 		$db->add_field('bans', 'ban_creator', 'INT(10) UNSIGNED', false, 0) or error('Unable to add ban_creator field', __FILE__, __LINE__, $db->error());
@@ -1501,7 +1501,7 @@ switch ($stage)
 			$_SESSION['dupe_users'][$cur_user['id']] = $cur_user;
 		}
 
-		$end_at = convert_table_utf8($db->prefix.'users', '_conv_users', $old_charset, 'id', $start_at, '_error_users');
+		$end_at = convert_table_utf8('user', '_conv_users', $old_charset, 'id', $start_at, '_error_users');
 
 		if ($end_at !== true)
 			$query_str = '?stage=conv_users&req_old_charset='.$old_charset.'&start_at='.$end_at;
@@ -1543,7 +1543,7 @@ switch ($stage)
 				else if (preg_match('%(?:\[/?(?:b|u|s|ins|del|em|i|h|colou?r|quote|code|img|url|email|list|\*)\]|\[(?:img|url|quote|list)=)%i', $username))
 					$errors[$id][] = $lang_update['Username BBCode error'];
 
-				$result = $db->query('SELECT username FROM '.$db->prefix.'users WHERE (UPPER(username)=UPPER(\''.$db->escape($username).'\') OR UPPER(username)=UPPER(\''.$db->escape(ucp_preg_replace('%[^\p{L}\p{N}]%u', '', $username)).'\')) AND id>1') or error('Unable to fetch user info', __FILE__, __LINE__, $db->error());
+				$result = $db->query('SELECT username FROM user WHERE (UPPER(username)=UPPER(\''.$db->escape($username).'\') OR UPPER(username)=UPPER(\''.$db->escape(ucp_preg_replace('%[^\p{L}\p{N}]%u', '', $username)).'\')) AND id>1') or error('Unable to fetch user info', __FILE__, __LINE__, $db->error());
 
 				if ($db->num_rows($result))
 				{
@@ -1561,7 +1561,7 @@ switch ($stage)
 						$temp[$idx] = is_null($value) ? 'NULL' : '\''.$db->escape($value).'\'';
 
 					// Insert the renamed user
-					$db->query('INSERT INTO '.$db->prefix.'users('.implode(',', array_keys($temp)).') VALUES ('.implode(',', array_values($temp)).')') or error('Unable to insert data to new table', __FILE__, __LINE__, $db->error());
+					$db->query('INSERT INTO user('.implode(',', array_keys($temp)).') VALUES ('.implode(',', array_values($temp)).')') or error('Unable to insert data to new table', __FILE__, __LINE__, $db->error());
 
 					// Renaming a user also affects a bunch of other stuff, lets fix that too...
 					$db->query('UPDATE '.$db->prefix.'posts SET poster=\''.$db->escape($username).'\' WHERE poster_id='.$id) or error('Unable to update posts', __FILE__, __LINE__, $db->error());
@@ -1745,14 +1745,14 @@ foreach ($errors[$id] as $cur_error)
 		require PUN_ROOT.'include/parser.php';
 
 		// Fetch users to process this cycle
-		$result = $db->query('SELECT id, signature FROM '.$db->prefix.'users WHERE id > '.$start_at.' ORDER BY id ASC LIMIT '.PER_PAGE) or error('Unable to fetch users', __FILE__, __LINE__, $db->error());
+		$result = $db->query('SELECT id, signature FROM user WHERE id > '.$start_at.' ORDER BY id ASC LIMIT '.PER_PAGE) or error('Unable to fetch users', __FILE__, __LINE__, $db->error());
 
 		$temp = array();
 		$end_at = 0;
 		while ($cur_item = $db->fetch_assoc($result))
 		{
 			echo sprintf($lang_update['Preparsing item'], $lang_update['signature'], $cur_item['id']).'<br />'."\n";
-			$db->query('UPDATE '.$db->prefix.'users SET signature = \''.$db->escape(preparse_bbcode($cur_item['signature'], $temp, true)).'\' WHERE id = '.$cur_item['id']) or error('Unable to update user', __FILE__, __LINE__, $db->error());
+			$db->query('UPDATE user SET signature = \''.$db->escape(preparse_bbcode($cur_item['signature'], $temp, true)).'\' WHERE id = '.$cur_item['id']) or error('Unable to update user', __FILE__, __LINE__, $db->error());
 
 			$end_at = $cur_item['id'];
 		}
@@ -1760,7 +1760,7 @@ foreach ($errors[$id] as $cur_error)
 		// Check if there is more work to do
 		if ($end_at > 0)
 		{
-			$result = $db->query('SELECT 1 FROM '.$db->prefix.'users WHERE id > '.$end_at.' ORDER BY id ASC LIMIT 1') or error('Unable to fetch next ID', __FILE__, __LINE__, $db->error());
+			$result = $db->query('SELECT 1 FROM user WHERE id > '.$end_at.' ORDER BY id ASC LIMIT 1') or error('Unable to fetch next ID', __FILE__, __LINE__, $db->error());
 			if ($db->num_rows($result) > 0)
 				$query_str = '?stage=preparse_sigs&start_at='.$end_at;
 		}

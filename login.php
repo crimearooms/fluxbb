@@ -29,7 +29,7 @@ if (isset($_POST['form_sent']) && $action == 'in')
 
 	$username_sql = ($db_type == 'mysql' || $db_type == 'mysqli' || $db_type == 'mysql_innodb' || $db_type == 'mysqli_innodb') ? 'username=\''.$db->escape($form_username).'\'' : 'LOWER(username)=LOWER(\''.$db->escape($form_username).'\')';
 
-	$result = $db->query('SELECT * FROM '.$db->prefix.'users WHERE '.$username_sql) or error('Unable to fetch user info', __FILE__, __LINE__, $db->error());
+	$result = $db->query('SELECT * FROM user WHERE '.$username_sql) or error('Unable to fetch user info', __FILE__, __LINE__, $db->error());
 	$cur_user = $db->fetch_assoc($result);
 
 	$authorized = false;
@@ -46,7 +46,7 @@ if (isset($_POST['form_sent']) && $action == 'in')
  			{
 				$authorized = true;
 
-				$db->query('UPDATE '.$db->prefix.'users SET password=\''.$form_password_hash.'\', salt=NULL WHERE id='.$cur_user['id']) or error('Unable to update user password', __FILE__, __LINE__, $db->error());
+				$db->query('UPDATE user SET password=\''.$form_password_hash.'\', salt=NULL WHERE id='.$cur_user['id']) or error('Unable to update user password', __FILE__, __LINE__, $db->error());
 			}
 		}
 		// If the length isn't 40 then the password isn't using sha1, so it must be md5 from 1.2
@@ -57,7 +57,7 @@ if (isset($_POST['form_sent']) && $action == 'in')
 			{
 				$authorized = true;
 
-				$db->query('UPDATE '.$db->prefix.'users SET password=\''.$form_password_hash.'\' WHERE id='.$cur_user['id']) or error('Unable to update user password', __FILE__, __LINE__, $db->error());
+				$db->query('UPDATE user SET password=\''.$form_password_hash.'\' WHERE id='.$cur_user['id']) or error('Unable to update user password', __FILE__, __LINE__, $db->error());
 			}
 		}
 		// Otherwise we should have a normal sha1 password
@@ -76,7 +76,7 @@ if (isset($_POST['form_sent']) && $action == 'in')
 		// Update the status if this is the first time the user logged in
 		if ($cur_user['group_id'] == PUN_UNVERIFIED)
 		{
-			$db->query('UPDATE '.$db->prefix.'users SET group_id='.$pun_config['o_default_user_group'].' WHERE id='.$cur_user['id']) or error('Unable to update user status', __FILE__, __LINE__, $db->error());
+			$db->query('UPDATE user SET group_id='.$pun_config['o_default_user_group'].' WHERE id='.$cur_user['id']) or error('Unable to update user status', __FILE__, __LINE__, $db->error());
 
 			// Regenerate the users info cache
 			if (!defined('FORUM_CACHE_FUNCTIONS_LOADED'))
@@ -117,7 +117,7 @@ else if ($action == 'out')
 
 	// Update last_visit (make sure there's something to update it with)
 	if (isset($pun_user['logged']))
-		$db->query('UPDATE '.$db->prefix.'users SET last_visit='.$pun_user['logged'].' WHERE id='.$pun_user['id']) or error('Unable to update user visit data', __FILE__, __LINE__, $db->error());
+		$db->query('UPDATE user SET last_visit='.$pun_user['logged'].' WHERE id='.$pun_user['id']) or error('Unable to update user visit data', __FILE__, __LINE__, $db->error());
 
 	pun_setcookie(1, pun_hash(uniqid(rand(), true)), time() + 31536000);
 
@@ -149,7 +149,7 @@ else if ($action == 'forget' || $action == 'forget_2')
 		// Did everything go according to plan?
 		if (empty($errors))
 		{
-			$result = $db->query('SELECT id, username, last_email_sent FROM '.$db->prefix.'users WHERE email=\''.$db->escape($email).'\'') or error('Unable to fetch user info', __FILE__, __LINE__, $db->error());
+			$result = $db->query('SELECT id, username, last_email_sent FROM user WHERE email=\''.$db->escape($email).'\'') or error('Unable to fetch user info', __FILE__, __LINE__, $db->error());
 
 			if ($db->num_rows($result))
 			{
@@ -175,7 +175,7 @@ else if ($action == 'forget' || $action == 'forget_2')
 					$new_password = random_pass(12);
 					$new_password_key = random_pass(8);
 
-					$db->query('UPDATE '.$db->prefix.'users SET activate_string=\''.pun_hash($new_password).'\', activate_key=\''.$new_password_key.'\', last_email_sent = '.time().' WHERE id='.$cur_hit['id']) or error('Unable to update activation data', __FILE__, __LINE__, $db->error());
+					$db->query('UPDATE user SET activate_string=\''.pun_hash($new_password).'\', activate_key=\''.$new_password_key.'\', last_email_sent = '.time().' WHERE id='.$cur_hit['id']) or error('Unable to update activation data', __FILE__, __LINE__, $db->error());
 
 					// Do the user specific replacements to the template
 					$cur_mail_message = str_replace('<username>', $cur_hit['username'], $mail_message);

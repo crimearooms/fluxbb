@@ -190,7 +190,7 @@ if (isset($_GET['show_users']))
 			$poster_ids[] = $cur_poster['poster_id'];
 		}
 
-		$result = $db->query('SELECT u.id, u.username, u.email, u.title, u.num_posts, u.admin_note, g.g_id, g.g_user_title FROM '.$db->prefix.'users AS u INNER JOIN '.$db->prefix.'groups AS g ON g.g_id=u.group_id WHERE u.id>1 AND u.id IN('.implode(',', $poster_ids).')') or error('Unable to fetch user info', __FILE__, __LINE__, $db->error());
+		$result = $db->query('SELECT u.id, u.username, u.email, u.title, u.num_posts, u.admin_note, g.g_id, g.g_user_title FROM user AS u INNER JOIN '.$db->prefix.'groups AS g ON g.g_id=u.group_id WHERE u.id>1 AND u.id IN('.implode(',', $poster_ids).')') or error('Unable to fetch user info', __FILE__, __LINE__, $db->error());
 
 		$user_data = array();
 		while ($cur_user = $db->fetch_assoc($result))
@@ -285,7 +285,7 @@ else if (isset($_POST['move_users']) || isset($_POST['move_users_comply']))
 		message($lang_admin_users['No users selected']);
 
 	// Are we trying to batch move any admins?
-	$result = $db->query('SELECT COUNT(*) FROM '.$db->prefix.'users WHERE id IN ('.implode(',', $user_ids).') AND group_id='.PUN_ADMIN) or error('Unable to fetch user info', __FILE__, __LINE__, $db->error());
+	$result = $db->query('SELECT COUNT(*) FROM user WHERE id IN ('.implode(',', $user_ids).') AND group_id='.PUN_ADMIN) or error('Unable to fetch user info', __FILE__, __LINE__, $db->error());
 	if ($db->result($result) > 0)
 		message($lang_admin_users['No move admins message']);
 
@@ -305,7 +305,7 @@ else if (isset($_POST['move_users']) || isset($_POST['move_users_comply']))
 
 		// Fetch user groups
 		$user_groups = array();
-		$result = $db->query('SELECT id, group_id FROM '.$db->prefix.'users WHERE id IN ('.implode(',', $user_ids).')') or error('Unable to fetch user groups', __FILE__, __LINE__, $db->error());
+		$result = $db->query('SELECT id, group_id FROM user WHERE id IN ('.implode(',', $user_ids).')') or error('Unable to fetch user groups', __FILE__, __LINE__, $db->error());
 		while ($cur_user = $db->fetch_assoc($result))
 		{
 			if (!isset($user_groups[$cur_user['group_id']]))
@@ -340,7 +340,7 @@ else if (isset($_POST['move_users']) || isset($_POST['move_users_comply']))
 		}
 
 		// Change user group
-		$db->query('UPDATE '.$db->prefix.'users SET group_id='.$new_group.' WHERE id IN ('.implode(',', $user_ids).')') or error('Unable to change user group', __FILE__, __LINE__, $db->error());
+		$db->query('UPDATE user SET group_id='.$new_group.' WHERE id IN ('.implode(',', $user_ids).')') or error('Unable to change user group', __FILE__, __LINE__, $db->error());
 
 		redirect('admin_users.php', $lang_admin_users['Users move redirect']);
 	}
@@ -411,7 +411,7 @@ else if (isset($_POST['delete_users']) || isset($_POST['delete_users_comply']))
 		message($lang_admin_users['No users selected']);
 
 	// Are we trying to delete any admins?
-	$result = $db->query('SELECT COUNT(*) FROM '.$db->prefix.'users WHERE id IN ('.implode(',', $user_ids).') AND group_id='.PUN_ADMIN) or error('Unable to fetch user info', __FILE__, __LINE__, $db->error());
+	$result = $db->query('SELECT COUNT(*) FROM user WHERE id IN ('.implode(',', $user_ids).') AND group_id='.PUN_ADMIN) or error('Unable to fetch user info', __FILE__, __LINE__, $db->error());
 	if ($db->result($result) > 0)
 		message($lang_admin_users['No delete admins message']);
 
@@ -419,7 +419,7 @@ else if (isset($_POST['delete_users']) || isset($_POST['delete_users_comply']))
 	{
 		// Fetch user groups
 		$user_groups = array();
-		$result = $db->query('SELECT id, group_id FROM '.$db->prefix.'users WHERE id IN ('.implode(',', $user_ids).')') or error('Unable to fetch user groups', __FILE__, __LINE__, $db->error());
+		$result = $db->query('SELECT id, group_id FROM user WHERE id IN ('.implode(',', $user_ids).')') or error('Unable to fetch user groups', __FILE__, __LINE__, $db->error());
 		while ($cur_user = $db->fetch_assoc($result))
 		{
 			if (!isset($user_groups[$cur_user['group_id']]))
@@ -486,7 +486,7 @@ else if (isset($_POST['delete_users']) || isset($_POST['delete_users_comply']))
 			$db->query('UPDATE '.$db->prefix.'posts SET poster_id=1 WHERE poster_id IN ('.implode(',', $user_ids).')') or error('Unable to update posts', __FILE__, __LINE__, $db->error());
 
 		// Delete the users
-		$db->query('DELETE FROM '.$db->prefix.'users WHERE id IN ('.implode(',', $user_ids).')') or error('Unable to delete users', __FILE__, __LINE__, $db->error());
+		$db->query('DELETE FROM user WHERE id IN ('.implode(',', $user_ids).')') or error('Unable to delete users', __FILE__, __LINE__, $db->error());
 
 		// Delete user avatars
 		foreach ($user_ids as $user_id)
@@ -560,12 +560,12 @@ else if (isset($_POST['ban_users']) || isset($_POST['ban_users_comply']))
 		message($lang_admin_users['No users selected']);
 
 	// Are we trying to ban any admins?
-	$result = $db->query('SELECT COUNT(*) FROM '.$db->prefix.'users WHERE id IN ('.implode(',', $user_ids).') AND group_id='.PUN_ADMIN) or error('Unable to fetch group info', __FILE__, __LINE__, $db->error());
+	$result = $db->query('SELECT COUNT(*) FROM user WHERE id IN ('.implode(',', $user_ids).') AND group_id='.PUN_ADMIN) or error('Unable to fetch group info', __FILE__, __LINE__, $db->error());
 	if ($db->result($result) > 0)
 		message($lang_admin_users['No ban admins message']);
 
 	// Also, we cannot ban moderators
-	$result = $db->query('SELECT COUNT(*) FROM '.$db->prefix.'users AS u INNER JOIN '.$db->prefix.'groups AS g ON u.group_id=g.g_id WHERE g.g_moderator=1 AND u.id IN ('.implode(',', $user_ids).')') or error('Unable to fetch moderator group info', __FILE__, __LINE__, $db->error());
+	$result = $db->query('SELECT COUNT(*) FROM user AS u INNER JOIN '.$db->prefix.'groups AS g ON u.group_id=g.g_id WHERE g.g_moderator=1 AND u.id IN ('.implode(',', $user_ids).')') or error('Unable to fetch moderator group info', __FILE__, __LINE__, $db->error());
 	if ($db->result($result) > 0)
 		message($lang_admin_users['No ban mods message']);
 
@@ -595,7 +595,7 @@ else if (isset($_POST['ban_users']) || isset($_POST['ban_users_comply']))
 
 		// Fetch user information
 		$user_info = array();
-		$result = $db->query('SELECT id, username, email, registration_ip FROM '.$db->prefix.'users WHERE id IN ('.implode(',', $user_ids).')') or error('Unable to fetch user info', __FILE__, __LINE__, $db->error());
+		$result = $db->query('SELECT id, username, email, registration_ip FROM user WHERE id IN ('.implode(',', $user_ids).')') or error('Unable to fetch user info', __FILE__, __LINE__, $db->error());
 		while ($cur_user = $db->fetch_assoc($result))
 			$user_info[$cur_user['id']] = array('username' => $cur_user['username'], 'email' => $cur_user['email'], 'ip' => $cur_user['registration_ip']);
 
@@ -796,7 +796,7 @@ else if (isset($_GET['find_user']))
 		$conditions[] = 'u.group_id='.$user_group;
 
 	// Fetch user count
-	$result = $db->query('SELECT COUNT(id) FROM '.$db->prefix.'users AS u LEFT JOIN '.$db->prefix.'groups AS g ON g.g_id=u.group_id WHERE u.id>1'.(!empty($conditions) ? ' AND '.implode(' AND ', $conditions) : '')) or error('Unable to fetch user info', __FILE__, __LINE__, $db->error());
+	$result = $db->query('SELECT COUNT(id) FROM user AS u LEFT JOIN '.$db->prefix.'groups AS g ON g.g_id=u.group_id WHERE u.id>1'.(!empty($conditions) ? ' AND '.implode(' AND ', $conditions) : '')) or error('Unable to fetch user info', __FILE__, __LINE__, $db->error());
 	$num_users = $db->result($result);
 
 	// Determine the user offset (based on $_GET['p'])
@@ -855,7 +855,7 @@ else if (isset($_GET['find_user']))
 			<tbody>
 <?php
 
-	$result = $db->query('SELECT u.id, u.username, u.email, u.title, u.num_posts, u.admin_note, g.g_id, g.g_user_title FROM '.$db->prefix.'users AS u LEFT JOIN '.$db->prefix.'groups AS g ON g.g_id=u.group_id WHERE u.id>1'.(!empty($conditions) ? ' AND '.implode(' AND ', $conditions) : '').' ORDER BY '.$db->escape($order_by).' '.$db->escape($direction).' LIMIT '.$start_from.', 50') or error('Unable to fetch user info', __FILE__, __LINE__, $db->error());
+	$result = $db->query('SELECT u.id, u.username, u.email, u.title, u.num_posts, u.admin_note, g.g_id, g.g_user_title FROM user AS u LEFT JOIN '.$db->prefix.'groups AS g ON g.g_id=u.group_id WHERE u.id>1'.(!empty($conditions) ? ' AND '.implode(' AND ', $conditions) : '').' ORDER BY '.$db->escape($order_by).' '.$db->escape($direction).' LIMIT '.$start_from.', 50') or error('Unable to fetch user info', __FILE__, __LINE__, $db->error());
 	if ($db->num_rows($result))
 	{
 		while ($user_data = $db->fetch_assoc($result))

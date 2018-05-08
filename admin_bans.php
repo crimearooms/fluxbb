@@ -32,7 +32,7 @@ if (isset($_REQUEST['add_ban']) || isset($_GET['edit_ban']))
 			if ($user_id < 2)
 				message($lang_common['Bad request'], false, '404 Not Found');
 
-			$result = $db->query('SELECT group_id, username, email FROM '.$db->prefix.'users WHERE id='.$user_id) or error('Unable to fetch user info', __FILE__, __LINE__, $db->error());
+			$result = $db->query('SELECT group_id, username, email FROM user WHERE id='.$user_id) or error('Unable to fetch user info', __FILE__, __LINE__, $db->error());
 			if ($db->num_rows($result))
 				list($group_id, $ban_user, $ban_email) = $db->fetch_row($result);
 			else
@@ -44,7 +44,7 @@ if (isset($_REQUEST['add_ban']) || isset($_GET['edit_ban']))
 
 			if ($ban_user != '')
 			{
-				$result = $db->query('SELECT id, group_id, username, email FROM '.$db->prefix.'users WHERE username=\''.$db->escape($ban_user).'\' AND id>1') or error('Unable to fetch user info', __FILE__, __LINE__, $db->error());
+				$result = $db->query('SELECT id, group_id, username, email FROM user WHERE username=\''.$db->escape($ban_user).'\' AND id>1') or error('Unable to fetch user info', __FILE__, __LINE__, $db->error());
 				if ($db->num_rows($result))
 					list($user_id, $group_id, $ban_user, $ban_email) = $db->fetch_row($result);
 				else
@@ -73,7 +73,7 @@ if (isset($_REQUEST['add_ban']) || isset($_GET['edit_ban']))
 
 			if ($ban_ip == '')
 			{
-				$result = $db->query('SELECT registration_ip FROM '.$db->prefix.'users WHERE id='.$user_id) or error('Unable to fetch user info', __FILE__, __LINE__, $db->error());
+				$result = $db->query('SELECT registration_ip FROM user WHERE id='.$user_id) or error('Unable to fetch user info', __FILE__, __LINE__, $db->error());
 				$ban_ip = ($db->num_rows($result)) ? $db->result($result) : '';
 			}
 		}
@@ -196,7 +196,7 @@ else if (isset($_POST['add_edit_ban']))
 	// Make sure we're not banning an admin or moderator
 	if (!empty($ban_user))
 	{
-		$result = $db->query('SELECT group_id FROM '.$db->prefix.'users WHERE username=\''.$db->escape($ban_user).'\' AND id>1') or error('Unable to fetch user info', __FILE__, __LINE__, $db->error());
+		$result = $db->query('SELECT group_id FROM user WHERE username=\''.$db->escape($ban_user).'\' AND id>1') or error('Unable to fetch user info', __FILE__, __LINE__, $db->error());
 		if ($db->num_rows($result))
 		{
 			$group_id = $db->result($result);
@@ -422,7 +422,7 @@ else if (isset($_GET['find_ban']))
 			<tbody>
 <?php
 
-	$result = $db->query('SELECT b.id, b.username, b.ip, b.email, b.message, b.expire, b.ban_creator, u.username AS ban_creator_username FROM '.$db->prefix.'bans AS b LEFT JOIN '.$db->prefix.'users AS u ON b.ban_creator=u.id WHERE b.id>0'.(!empty($conditions) ? ' AND '.implode(' AND ', $conditions) : '').' ORDER BY '.$db->escape($order_by).' '.$db->escape($direction).' LIMIT '.$start_from.', 50') or error('Unable to fetch ban list', __FILE__, __LINE__, $db->error());
+	$result = $db->query('SELECT b.id, b.username, b.ip, b.email, b.message, b.expire, b.ban_creator, u.username AS ban_creator_username FROM '.$db->prefix.'bans AS b LEFT JOIN user AS u ON b.ban_creator=u.id WHERE b.id>0'.(!empty($conditions) ? ' AND '.implode(' AND ', $conditions) : '').' ORDER BY '.$db->escape($order_by).' '.$db->escape($direction).' LIMIT '.$start_from.', 50') or error('Unable to fetch ban list', __FILE__, __LINE__, $db->error());
 	if ($db->num_rows($result))
 	{
 		while ($ban_data = $db->fetch_assoc($result))

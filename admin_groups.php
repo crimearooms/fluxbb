@@ -370,7 +370,7 @@ else if (isset($_POST['add_edit_group']))
 
 		// Promote all users who would be promoted to this group on their next post
 		if ($promote_next_group)
-			$db->query('UPDATE '.$db->prefix.'users SET group_id = '.$promote_next_group.' WHERE group_id = '.intval($_POST['group_id']).' AND num_posts >= '.$promote_min_posts) or error('Unable to auto-promote existing users', __FILE__, __LINE__, $db->error());
+			$db->query('UPDATE user SET group_id = '.$promote_next_group.' WHERE group_id = '.intval($_POST['group_id']).' AND num_posts >= '.$promote_min_posts) or error('Unable to auto-promote existing users', __FILE__, __LINE__, $db->error());
 	}
 
 	// Regenerate the quick jump cache
@@ -428,7 +428,7 @@ else if (isset($_GET['del_group']))
 		message($lang_admin_groups['Cannot remove default message']);
 
 	// Check if this group has any members
-	$result = $db->query('SELECT g.g_title, COUNT(u.id) FROM '.$db->prefix.'groups AS g INNER JOIN '.$db->prefix.'users AS u ON g.g_id=u.group_id WHERE g.g_id='.$group_id.' GROUP BY g.g_id, g_title') or error('Unable to fetch group info', __FILE__, __LINE__, $db->error());
+	$result = $db->query('SELECT g.g_title, COUNT(u.id) FROM '.$db->prefix.'groups AS g INNER JOIN user AS u ON g.g_id=u.group_id WHERE g.g_id='.$group_id.' GROUP BY g.g_id, g_title') or error('Unable to fetch group info', __FILE__, __LINE__, $db->error());
 
 	// If the group doesn't have any members or if we've already selected a group to move the members to
 	if (!$db->num_rows($result) || isset($_POST['del_group']))
@@ -438,7 +438,7 @@ else if (isset($_GET['del_group']))
 			if (isset($_POST['del_group']))
 			{
 				$move_to_group = intval($_POST['move_to_group']);
-				$db->query('UPDATE '.$db->prefix.'users SET group_id='.$move_to_group.' WHERE group_id='.$group_id) or error('Unable to move users into group', __FILE__, __LINE__, $db->error());
+				$db->query('UPDATE user SET group_id='.$move_to_group.' WHERE group_id='.$group_id) or error('Unable to move users into group', __FILE__, __LINE__, $db->error());
 			}
 
 			// Delete the group and any forum specific permissions

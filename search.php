@@ -126,7 +126,7 @@ if (isset($_GET['action']) || isset($_GET['search_id']))
 				message(sprintf($lang_search['Search flood'], $pun_user['g_search_flood'], $pun_user['g_search_flood'] - (time() - $pun_user['last_search'])));
 
 			if (!$pun_user['is_guest'])
-				$db->query('UPDATE '.$db->prefix.'users SET last_search='.time().' WHERE id='.$pun_user['id']) or error('Unable to update user', __FILE__, __LINE__, $db->error());
+				$db->query('UPDATE user SET last_search='.time().' WHERE id='.$pun_user['id']) or error('Unable to update user', __FILE__, __LINE__, $db->error());
 			else
 				$db->query('UPDATE '.$db->prefix.'online SET last_search='.time().' WHERE ident=\''.$db->escape(get_remote_address()).'\'' ) or error('Unable to update user', __FILE__, __LINE__, $db->error());
 
@@ -259,11 +259,11 @@ if (isset($_GET['action']) || isset($_GET['search_id']))
 				switch ($db_type)
 				{
 					case 'pgsql':
-						$result = $db->query('SELECT id FROM '.$db->prefix.'users WHERE username ILIKE \''.$db->escape($author).'\'') or error('Unable to fetch users', __FILE__, __LINE__, $db->error());
+						$result = $db->query('SELECT id FROM user WHERE username ILIKE \''.$db->escape($author).'\'') or error('Unable to fetch users', __FILE__, __LINE__, $db->error());
 						break;
 
 					default:
-						$result = $db->query('SELECT id FROM '.$db->prefix.'users WHERE username LIKE \''.$db->escape($author).'\'') or error('Unable to fetch users', __FILE__, __LINE__, $db->error());
+						$result = $db->query('SELECT id FROM user WHERE username LIKE \''.$db->escape($author).'\'') or error('Unable to fetch users', __FILE__, __LINE__, $db->error());
 						break;
 				}
 
@@ -512,7 +512,7 @@ if (isset($_GET['action']) || isset($_GET['search_id']))
 			{
 				// Fetch username of subscriber
 				$subscriber_id = $search_type[2];
-				$result = $db->query('SELECT username FROM '.$db->prefix.'users WHERE id='.$subscriber_id) or error('Unable to fetch username of subscriber', __FILE__, __LINE__, $db->error());
+				$result = $db->query('SELECT username FROM user WHERE id='.$subscriber_id) or error('Unable to fetch username of subscriber', __FILE__, __LINE__, $db->error());
 
 				if ($db->num_rows($result))
 					$subscriber_name = $db->result($result);

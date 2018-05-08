@@ -177,10 +177,10 @@ function generate_users_info_cache()
 
 	$stats = array();
 
-	$result = $db->query('SELECT COUNT(id)-1 FROM '.$db->prefix.'users WHERE group_id!='.PUN_UNVERIFIED) or error('Unable to fetch total user count', __FILE__, __LINE__, $db->error());
+	$result = $db->query('SELECT COUNT(id)-1 FROM user WHERE group_id!='.PUN_UNVERIFIED) or error('Unable to fetch total user count', __FILE__, __LINE__, $db->error());
 	$stats['total_users'] = $db->result($result);
 
-	$result = $db->query('SELECT id, username FROM '.$db->prefix.'users WHERE group_id!='.PUN_UNVERIFIED.' ORDER BY registered DESC LIMIT 1') or error('Unable to fetch newest registered user', __FILE__, __LINE__, $db->error());
+	$result = $db->query('SELECT id, username FROM user WHERE group_id!='.PUN_UNVERIFIED.' ORDER BY registered DESC LIMIT 1') or error('Unable to fetch newest registered user', __FILE__, __LINE__, $db->error());
 	$stats['last_user'] = $db->fetch_assoc($result);
 
 	// Output users info as PHP code
@@ -197,7 +197,7 @@ function generate_admins_cache()
 	global $db;
 
 	// Get admins from the DB
-	$result = $db->query('SELECT id FROM '.$db->prefix.'users WHERE group_id='.PUN_ADMIN) or error('Unable to fetch users info', __FILE__, __LINE__, $db->error());
+	$result = $db->query('SELECT id FROM user WHERE group_id='.PUN_ADMIN) or error('Unable to fetch users info', __FILE__, __LINE__, $db->error());
 
 	$output = array();
 	while ($row = $db->fetch_row($result))

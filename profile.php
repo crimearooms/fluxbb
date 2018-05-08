@@ -48,14 +48,14 @@ if ($action == 'change_pass')
 
 		$key = $_GET['key'];
 
-		$result = $db->query('SELECT * FROM '.$db->prefix.'users WHERE id='.$id) or error('Unable to fetch new password', __FILE__, __LINE__, $db->error());
+		$result = $db->query('SELECT * FROM user WHERE id='.$id) or error('Unable to fetch new password', __FILE__, __LINE__, $db->error());
 		$cur_user = $db->fetch_assoc($result);
 
 		if ($key == '' || $key != $cur_user['activate_key'])
 			message($lang_profile['Pass key bad'].' <a href="mailto:'.pun_htmlspecialchars($pun_config['o_admin_email']).'">'.pun_htmlspecialchars($pun_config['o_admin_email']).'</a>.');
 		else
 		{
-			$db->query('UPDATE '.$db->prefix.'users SET password=\''.$db->escape($cur_user['activate_string']).'\', activate_string=NULL, activate_key=NULL'.(!empty($cur_user['salt']) ? ', salt=NULL' : '').' WHERE id='.$id) or error('Unable to update password', __FILE__, __LINE__, $db->error());
+			$db->query('UPDATE user SET password=\''.$db->escape($cur_user['activate_string']).'\', activate_string=NULL, activate_key=NULL'.(!empty($cur_user['salt']) ? ', salt=NULL' : '').' WHERE id='.$id) or error('Unable to update password', __FILE__, __LINE__, $db->error());
 
 			message($lang_profile['Pass updated'], true);
 		}
@@ -68,7 +68,7 @@ if ($action == 'change_pass')
 			message($lang_common['No permission'], false, '403 Forbidden');
 		else if ($pun_user['g_moderator'] == '1') // A moderator trying to change a user's password?
 		{
-			$result = $db->query('SELECT u.group_id, g.g_moderator FROM '.$db->prefix.'users AS u INNER JOIN '.$db->prefix.'groups AS g ON (g.g_id=u.group_id) WHERE u.id='.$id) or error('Unable to fetch user info', __FILE__, __LINE__, $db->error());
+			$result = $db->query('SELECT u.group_id, g.g_moderator FROM user AS u INNER JOIN '.$db->prefix.'groups AS g ON (g.g_id=u.group_id) WHERE u.id='.$id) or error('Unable to fetch user info', __FILE__, __LINE__, $db->error());
 			if (!$db->num_rows($result))
 				message($lang_common['Bad request'], false, '404 Not Found');
 
@@ -93,7 +93,7 @@ if ($action == 'change_pass')
 		if (pun_strlen($new_password1) < 6)
 			message($lang_prof_reg['Pass too short']);
 
-		$result = $db->query('SELECT * FROM '.$db->prefix.'users WHERE id='.$id) or error('Unable to fetch password', __FILE__, __LINE__, $db->error());
+		$result = $db->query('SELECT * FROM user WHERE id='.$id) or error('Unable to fetch password', __FILE__, __LINE__, $db->error());
 		$cur_user = $db->fetch_assoc($result);
 
 		$authorized = false;
@@ -111,7 +111,7 @@ if ($action == 'change_pass')
 
 		$new_password_hash = pun_hash($new_password1);
 
-		$db->query('UPDATE '.$db->prefix.'users SET password=\''.$new_password_hash.'\''.(!empty($cur_user['salt']) ? ', salt=NULL' : '').' WHERE id='.$id) or error('Unable to update password', __FILE__, __LINE__, $db->error());
+		$db->query('UPDATE user SET password=\''.$new_password_hash.'\''.(!empty($cur_user['salt']) ? ', salt=NULL' : '').' WHERE id='.$id) or error('Unable to update password', __FILE__, __LINE__, $db->error());
 
 		if ($pun_user['id'] == $id)
 			pun_setcookie($pun_user['id'], $new_password_hash, time() + $pun_config['o_timeout_visit']);
@@ -164,7 +164,7 @@ else if ($action == 'change_email')
 			message($lang_common['No permission'], false, '403 Forbidden');
 		else if ($pun_user['g_moderator'] == '1') // A moderator trying to change a user's email?
 		{
-			$result = $db->query('SELECT u.group_id, g.g_moderator FROM '.$db->prefix.'users AS u INNER JOIN '.$db->prefix.'groups AS g ON (g.g_id=u.group_id) WHERE u.id='.$id) or error('Unable to fetch user info', __FILE__, __LINE__, $db->error());
+			$result = $db->query('SELECT u.group_id, g.g_moderator FROM user AS u INNER JOIN '.$db->prefix.'groups AS g ON (g.g_id=u.group_id) WHERE u.id='.$id) or error('Unable to fetch user info', __FILE__, __LINE__, $db->error());
 			if (!$db->num_rows($result))
 				message($lang_common['Bad request'], false, '404 Not Found');
 
@@ -179,14 +179,14 @@ else if ($action == 'change_email')
 	{
 		$key = $_GET['key'];
 
-		$result = $db->query('SELECT activate_string, activate_key FROM '.$db->prefix.'users WHERE id='.$id) or error('Unable to fetch activation data', __FILE__, __LINE__, $db->error());
+		$result = $db->query('SELECT activate_string, activate_key FROM user WHERE id='.$id) or error('Unable to fetch activation data', __FILE__, __LINE__, $db->error());
 		list($new_email, $new_email_key) = $db->fetch_row($result);
 
 		if ($key == '' || $key != $new_email_key)
 			message($lang_profile['Email key bad'].' <a href="mailto:'.pun_htmlspecialchars($pun_config['o_admin_email']).'">'.pun_htmlspecialchars($pun_config['o_admin_email']).'</a>.');
 		else
 		{
-			$db->query('UPDATE '.$db->prefix.'users SET email=activate_string, activate_string=NULL, activate_key=NULL WHERE id='.$id) or error('Unable to update email address', __FILE__, __LINE__, $db->error());
+			$db->query('UPDATE user SET email=activate_string, activate_string=NULL, activate_key=NULL WHERE id='.$id) or error('Unable to update email address', __FILE__, __LINE__, $db->error());
 
 			message($lang_profile['Email updated'], true);
 		}
@@ -231,7 +231,7 @@ else if ($action == 'change_email')
 		}
 
 		// Check if someone else already has registered with that email address
-		$result = $db->query('SELECT id, username FROM '.$db->prefix.'users WHERE email=\''.$db->escape($new_email).'\'') or error('Unable to fetch user info', __FILE__, __LINE__, $db->error());
+		$result = $db->query('SELECT id, username FROM user WHERE email=\''.$db->escape($new_email).'\'') or error('Unable to fetch user info', __FILE__, __LINE__, $db->error());
 		if ($db->num_rows($result))
 		{
 			if ($pun_config['p_allow_dupe_email'] == '0')
@@ -261,7 +261,7 @@ else if ($action == 'change_email')
 
 		$new_email_key = random_pass(8);
 
-		$db->query('UPDATE '.$db->prefix.'users SET activate_string=\''.$db->escape($new_email).'\', activate_key=\''.$new_email_key.'\' WHERE id='.$id) or error('Unable to update activation data', __FILE__, __LINE__, $db->error());
+		$db->query('UPDATE user SET activate_string=\''.$db->escape($new_email).'\', activate_key=\''.$new_email_key.'\' WHERE id='.$id) or error('Unable to update activation data', __FILE__, __LINE__, $db->error());
 
 		// Load the "activate email" template
 		$mail_tpl = trim(file_get_contents(PUN_ROOT.'lang/'.$pun_user['language'].'/mail_templates/activate_email.tpl'));
@@ -466,10 +466,10 @@ else if (isset($_POST['update_group_membership']))
 
 	$new_group_id = intval($_POST['group_id']);
 
-	$result = $db->query('SELECT group_id FROM '.$db->prefix.'users WHERE id='.$id) or error('Unable to fetch user group', __FILE__, __LINE__, $db->error());
+	$result = $db->query('SELECT group_id FROM user WHERE id='.$id) or error('Unable to fetch user group', __FILE__, __LINE__, $db->error());
 	$old_group_id = $db->result($result);
 
-	$db->query('UPDATE '.$db->prefix.'users SET group_id='.$new_group_id.' WHERE id='.$id) or error('Unable to change user group', __FILE__, __LINE__, $db->error());
+	$db->query('UPDATE user SET group_id='.$new_group_id.' WHERE id='.$id) or error('Unable to change user group', __FILE__, __LINE__, $db->error());
 
 	// Regenerate the users info cache
 	if (!defined('FORUM_CACHE_FUNCTIONS_LOADED'))
@@ -515,7 +515,7 @@ else if (isset($_POST['update_forums']))
 	confirm_referrer('profile.php');
 
 	// Get the username of the user we are processing
-	$result = $db->query('SELECT username FROM '.$db->prefix.'users WHERE id='.$id) or error('Unable to fetch user info', __FILE__, __LINE__, $db->error());
+	$result = $db->query('SELECT username FROM user WHERE id='.$id) or error('Unable to fetch user info', __FILE__, __LINE__, $db->error());
 	$username = $db->result($result);
 
 	$moderator_in = (isset($_POST['moderator_in'])) ? array_keys($_POST['moderator_in']) : array();
@@ -554,7 +554,7 @@ else if (isset($_POST['ban']))
 		message($lang_common['No permission'], false, '403 Forbidden');
 
 	// Get the username of the user we are banning
-	$result = $db->query('SELECT username FROM '.$db->prefix.'users WHERE id='.$id) or error('Unable to fetch username', __FILE__, __LINE__, $db->error());
+	$result = $db->query('SELECT username FROM user WHERE id='.$id) or error('Unable to fetch username', __FILE__, __LINE__, $db->error());
 	$username = $db->result($result);
 
 	// Check whether user is already banned
@@ -578,14 +578,14 @@ else if ($action == 'promote')
 
 	$pid = isset($_GET['pid']) ? intval($_GET['pid']) : 0;
 
-	$sql = 'SELECT g.g_promote_next_group FROM '.$db->prefix.'groups AS g INNER JOIN '.$db->prefix.'users AS u ON u.group_id=g.g_id WHERE u.id='.$id.' AND g.g_promote_next_group>0';
+	$sql = 'SELECT g.g_promote_next_group FROM '.$db->prefix.'groups AS g INNER JOIN user AS u ON u.group_id=g.g_id WHERE u.id='.$id.' AND g.g_promote_next_group>0';
 	$result = $db->query($sql) or error('Unable to fetch promotion information', __FILE__, __LINE__, $db->error());
 
 	if (!$db->num_rows($result))
 		message($lang_common['Bad request'], false, '404 Not Found');
 
 	$next_group_id = $db->result($result);
-	$db->query('UPDATE '.$db->prefix.'users SET group_id='.$next_group_id.' WHERE id='.$id) or error('Unable to promote user', __FILE__, __LINE__, $db->error());
+	$db->query('UPDATE user SET group_id='.$next_group_id.' WHERE id='.$id) or error('Unable to promote user', __FILE__, __LINE__, $db->error());
 
 	redirect('viewtopic.php?pid='.$pid.'#p'.$pid, $lang_profile['User promote redirect']);
 }
@@ -599,7 +599,7 @@ else if (isset($_POST['delete_user']) || isset($_POST['delete_user_comply']))
 	confirm_referrer('profile.php');
 
 	// Get the username and group of the user we are deleting
-	$result = $db->query('SELECT group_id, username FROM '.$db->prefix.'users WHERE id='.$id) or error('Unable to fetch user info', __FILE__, __LINE__, $db->error());
+	$result = $db->query('SELECT group_id, username FROM user WHERE id='.$id) or error('Unable to fetch user info', __FILE__, __LINE__, $db->error());
 	list($group_id, $username) = $db->fetch_row($result);
 
 	if ($group_id == PUN_ADMIN)
@@ -665,7 +665,7 @@ else if (isset($_POST['delete_user']) || isset($_POST['delete_user_comply']))
 			$db->query('UPDATE '.$db->prefix.'posts SET poster_id=1 WHERE poster_id='.$id) or error('Unable to update posts', __FILE__, __LINE__, $db->error());
 
 		// Delete the user
-		$db->query('DELETE FROM '.$db->prefix.'users WHERE id='.$id) or error('Unable to delete user', __FILE__, __LINE__, $db->error());
+		$db->query('DELETE FROM user WHERE id='.$id) or error('Unable to delete user', __FILE__, __LINE__, $db->error());
 
 		// Delete user avatar
 		delete_avatar($id);
@@ -716,7 +716,7 @@ else if (isset($_POST['delete_user']) || isset($_POST['delete_user_comply']))
 else if (isset($_POST['form_sent']))
 {
 	// Fetch the user group of the user we are editing
-	$result = $db->query('SELECT u.username, u.group_id, g.g_moderator FROM '.$db->prefix.'users AS u LEFT JOIN '.$db->prefix.'groups AS g ON (g.g_id=u.group_id) WHERE u.id='.$id) or error('Unable to fetch user info', __FILE__, __LINE__, $db->error());
+	$result = $db->query('SELECT u.username, u.group_id, g.g_moderator FROM user AS u LEFT JOIN '.$db->prefix.'groups AS g ON (g.g_id=u.group_id) WHERE u.id='.$id) or error('Unable to fetch user info', __FILE__, __LINE__, $db->error());
 	if (!$db->num_rows($result))
 		message($lang_common['Bad request'], false, '404 Not Found');
 
@@ -983,7 +983,7 @@ else if (isset($_POST['form_sent']))
 		message($lang_common['Bad request'], false, '404 Not Found');
 
 
-	$db->query('UPDATE '.$db->prefix.'users SET '.implode(',', $temp).' WHERE id='.$id) or error('Unable to update profile', __FILE__, __LINE__, $db->error());
+	$db->query('UPDATE user SET '.implode(',', $temp).' WHERE id='.$id) or error('Unable to update profile', __FILE__, __LINE__, $db->error());
 
 	// If we changed the username we have to update some stuff
 	if ($username_updated)
@@ -1000,7 +1000,7 @@ else if (isset($_POST['form_sent']))
 		$db->query('UPDATE '.$db->prefix.'online SET ident=\''.$db->escape($form['username']).'\' WHERE ident=\''.$db->escape($old_username).'\'') or error('Unable to update online list', __FILE__, __LINE__, $db->error());
 
 		// If the user is a moderator or an administrator we have to update the moderator lists
-		$result = $db->query('SELECT group_id FROM '.$db->prefix.'users WHERE id='.$id) or error('Unable to fetch user info', __FILE__, __LINE__, $db->error());
+		$result = $db->query('SELECT group_id FROM user WHERE id='.$id) or error('Unable to fetch user info', __FILE__, __LINE__, $db->error());
 		$group_id = $db->result($result);
 
 		$result = $db->query('SELECT g_moderator FROM '.$db->prefix.'groups WHERE g_id='.$group_id) or error('Unable to fetch group', __FILE__, __LINE__, $db->error());
@@ -1042,7 +1042,7 @@ else if (isset($_POST['form_sent']))
 flux_hook('profile_after_form_handling');
 
 
-$result = $db->query('SELECT u.username, u.email, u.title, u.realname, u.url, u.jabber, u.icq, u.msn, u.aim, u.yahoo, u.location, u.signature, u.disp_topics, u.disp_posts, u.email_setting, u.notify_with_post, u.auto_notify, u.show_smilies, u.show_img, u.show_img_sig, u.show_avatars, u.show_sig, u.timezone, u.dst, u.language, u.style, u.num_posts, u.last_post, u.registered, u.registration_ip, u.admin_note, u.date_format, u.time_format, u.last_visit, g.g_id, g.g_user_title, g.g_moderator FROM '.$db->prefix.'users AS u LEFT JOIN '.$db->prefix.'groups AS g ON g.g_id=u.group_id WHERE u.id='.$id) or error('Unable to fetch user info', __FILE__, __LINE__, $db->error());
+$result = $db->query('SELECT u.username, u.email, u.title, u.realname, u.url, u.jabber, u.icq, u.msn, u.aim, u.yahoo, u.location, u.signature, u.disp_topics, u.disp_posts, u.email_setting, u.notify_with_post, u.auto_notify, u.show_smilies, u.show_img, u.show_img_sig, u.show_avatars, u.show_sig, u.timezone, u.dst, u.language, u.style, u.num_posts, u.last_post, u.registered, u.registration_ip, u.admin_note, u.date_format, u.time_format, u.last_visit, g.g_id, g.g_user_title, g.g_moderator FROM user AS u LEFT JOIN '.$db->prefix.'groups AS g ON g.g_id=u.group_id WHERE u.id='.$id) or error('Unable to fetch user info', __FILE__, __LINE__, $db->error());
 if (!$db->num_rows($result))
 	message($lang_common['Bad request'], false, '404 Not Found');
 

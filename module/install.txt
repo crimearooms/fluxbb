@@ -1,0 +1,41 @@
+1. установите advanced приложение yii фреймворка
+
+2. установите форум /forum/install.php
+
+3. подключите файл /frontend/web/module/config/common.php в конфиг вашего приложения в /common/config/main.php
+
+$return = yii\helpers\ArrayHelper::merge(
+	$return, 
+	require dirname(dirname(__DIR__)) . '/frontend/web/forum/module/config/common.php'
+);
+
+4. подключите файл /frontend/web/module/config/console.php в конфиг вашего приложения в /console/config/main.php
+
+$return = yii\helpers\ArrayHelper::merge(
+	$return, 
+	require dirname(dirname(__DIR__)) . '/frontend/web/forum/module/config/console.php'
+);
+
+5. подключите файл /frontend/web/module/config/frontend.php в конфиг вашего приложения в /frontend/config/main.php
+
+$return = yii\helpers\ArrayHelper::merge(
+	$return, 
+	require dirname(__DIR__) . '/frontend/web/forum/module/config/frontend.php'
+);
+
+6. подключите файл /frontend/web/module/config/backend.php в конфиг вашего приложения в /backend/config/main.php
+
+$return = yii\helpers\ArrayHelper::merge(
+	$return, 
+	require dirname(dirname(__DIR__)) . '/frontend/web/forum/module/config/backend.php'
+);
+
+6. добавьте настройку миграций в console/config/main.php
+
+'controllerMap' => [
+	'migrate' => [
+		'class' => 'yii\console\controllers\MigrateController'
+	]
+]
+
+7. примените миграции форума командой yii migrate
