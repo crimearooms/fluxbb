@@ -81,8 +81,6 @@ class m180508_162811_user_add_board_columns extends Migration
 
     	$this->addColumn($this->tableName, 'last_report_sent', $this->integer(10)->unsigned());
 
-    	$this->addColumn($this->tableName, 'registred', $this->integer(10)->unsigned()->notNull()->defaultValue(0));
-
     	$this->addColumn($this->tableName, 'registration_ip', $this->string(39)->notNull()->defaultValue('0.0.0.0'));
 
     	$this->addColumn($this->tableName, 'last_visit', $this->integer(10)->unsigned()->notNull()->defaultValue(0));
@@ -92,55 +90,13 @@ class m180508_162811_user_add_board_columns extends Migration
     	$this->addColumn($this->tableName, 'activate_string', $this->string(80));
 
     	$this->addColumn($this->tableName, 'activate_key', $this->string(8));
-
-    	$this->createIndex('registred_idx', $this->tableName, ['registred']);
     }
-
-    /*
-
-	$schema = array(
-		'FIELDS'		=> array(
-			'id'				=> array(
-				'datatype'		=> 'SERIAL',
-				'allow_null'	=> false
-			),
-			'username'			=> array(
-				'datatype'		=> 'VARCHAR(200)',
-				'allow_null'	=> false,
-				'default'		=> '\'\''
-			),
-			'password'			=> array(
-				'datatype'		=> 'VARCHAR(40)',
-				'allow_null'	=> false,
-				'default'		=> '\'\''
-			),
-			'email'				=> array(
-				'datatype'		=> 'VARCHAR(80)',
-				'allow_null'	=> false,
-				'default'		=> '\'\''
-			)
-		),
-		'PRIMARY KEY'	=> array('id'),
-		'UNIQUE KEYS'	=> array(
-			'username_idx'		=> array('username')
-		),
-		'INDEXES'		=> array(
-			'registered_idx'	=> array('registered')
-		)
-	);
-
-	if ($db_type == 'mysql' || $db_type == 'mysqli' || $db_type == 'mysql_innodb' || $db_type == 'mysqli_innodb')
-		$schema['UNIQUE KEYS']['username_idx'] = array('username(25)');
-
-    */
 
     /**
      * @inheritdoc
      */
     public function safeDown()
     {
-    	$this->dropIndex('registred_idx', $this->tableName);
-
     	$this->dropColumn($this->tableName, 'group_id');
 
     	$this->dropColumn($this->tableName, 'title');
@@ -204,8 +160,6 @@ class m180508_162811_user_add_board_columns extends Migration
     	$this->dropColumn($this->tableName, 'last_email_sent');
 
     	$this->dropColumn($this->tableName, 'last_report_sent');
-
-    	$this->dropColumn($this->tableName, 'registred');
 
     	$this->dropColumn($this->tableName, 'registration_ip');
 

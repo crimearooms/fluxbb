@@ -698,7 +698,7 @@ else if (isset($_GET['find_user']))
 	$last_visit_before = isset($_GET['last_visit_before']) ? pun_trim($_GET['last_visit_before']) : '';
 	$registered_after = isset($_GET['registered_after']) ? pun_trim($_GET['registered_after']) : '';
 	$registered_before = isset($_GET['registered_before']) ? pun_trim($_GET['registered_before']) : '';
-	$order_by = isset($_GET['order_by']) && in_array($_GET['order_by'], array('username', 'email', 'num_posts', 'last_post', 'last_visit', 'registered')) ? $_GET['order_by'] : 'username';
+	$order_by = isset($_GET['order_by']) && in_array($_GET['order_by'], array('username', 'email', 'num_posts', 'last_post', 'last_visit', 'created_at')) ? $_GET['order_by'] : 'username';
 	$direction = isset($_GET['direction']) && $_GET['direction'] == 'DESC' ? 'DESC' : 'ASC';
 	$user_group = isset($_GET['user_group']) ? intval($_GET['user_group']) : -1;
 
@@ -758,7 +758,7 @@ else if (isset($_GET['find_user']))
 		if ($registered_after === false || $registered_after == -1)
 			message($lang_admin_users['Invalid date time message']);
 
-		$conditions[] = 'u.registered>'.$registered_after;
+		$conditions[] = 'u.created_at>'.$registered_after;
 	}
 	if ($registered_before != '')
 	{
@@ -768,7 +768,7 @@ else if (isset($_GET['find_user']))
 		if ($registered_before === false || $registered_before == -1)
 			message($lang_admin_users['Invalid date time message']);
 
-		$conditions[] = 'u.registered<'.$registered_before;
+		$conditions[] = 'u.created_at<'.$registered_before;
 	}
 
 	$like_command = ($db_type == 'pgsql') ? 'ILIKE' : 'LIKE';
@@ -1035,7 +1035,7 @@ else
 											<option value="num_posts"><?php echo $lang_admin_users['Order by posts'] ?></option>
 											<option value="last_post"><?php echo $lang_admin_users['Order by last post'] ?></option>
 											<option value="last_visit"><?php echo $lang_admin_users['Order by last visit'] ?></option>
-											<option value="registered"><?php echo $lang_admin_users['Order by registered'] ?></option>
+											<option value="created_at"><?php echo $lang_admin_users['Order by created_at'] ?></option>
 										</select>&#160;&#160;&#160;<select name="direction" tabindex="22">
 											<option value="ASC" selected="selected"><?php echo $lang_admin_users['Ascending'] ?></option>
 											<option value="DESC"><?php echo $lang_admin_users['Descending'] ?></option>

@@ -27,7 +27,7 @@ $show_post_count = ($pun_config['o_show_post_count'] == '1' || $pun_user['is_adm
 
 $username = isset($_GET['username']) && $pun_user['g_search_users'] == '1' ? pun_trim($_GET['username']) : '';
 $show_group = isset($_GET['show_group']) ? intval($_GET['show_group']) : -1;
-$sort_by = isset($_GET['sort_by']) && (in_array($_GET['sort_by'], array('username', 'registered')) || ($_GET['sort_by'] == 'num_posts' && $show_post_count)) ? $_GET['sort_by'] : 'username';
+$sort_by = isset($_GET['sort_by']) && (in_array($_GET['sort_by'], array('username', 'created_at')) || ($_GET['sort_by'] == 'num_posts' && $show_post_count)) ? $_GET['sort_by'] : 'username';
 $sort_dir = isset($_GET['sort_dir']) && $_GET['sort_dir'] == 'DESC' ? 'DESC' : 'ASC';
 
 // Create any SQL for the WHERE clause
@@ -92,7 +92,7 @@ while ($cur_group = $db->fetch_assoc($result))
 						<label class="conl"><?php echo $lang_search['Sort by']."\n" ?>
 						<br /><select name="sort_by">
 							<option value="username"<?php if ($sort_by == 'username') echo ' selected="selected"' ?>><?php echo $lang_common['Username'] ?></option>
-							<option value="registered"<?php if ($sort_by == 'registered') echo ' selected="selected"' ?>><?php echo $lang_common['Registered'] ?></option>
+							<option value="created_at"<?php if ($sort_by == 'created_at') echo ' selected="selected"' ?>><?php echo $lang_common['Registered'] ?></option>
 <?php if ($show_post_count): ?>							<option value="num_posts"<?php if ($sort_by == 'num_posts') echo ' selected="selected"' ?>><?php echo $lang_ul['No of posts'] ?></option>
 <?php endif; ?>						</select>
 						<br /></label>
@@ -144,7 +144,7 @@ if ($db->num_rows($result))
 		$user_ids[] = $cur_user_id;
 
 	// Grab the users
-	$result = $db->query('SELECT u.id, u.username, u.title, u.num_posts, u.registered, g.g_id, g.g_user_title FROM user AS u LEFT JOIN '.$db->prefix.'groups AS g ON g.g_id=u.group_id WHERE u.id IN('.implode(',', $user_ids).') ORDER BY '.$sort_by.' '.$sort_dir.', u.id ASC') or error('Unable to fetch user list', __FILE__, __LINE__, $db->error());
+	$result = $db->query('SELECT u.id, u.username, u.title, u.num_posts, u.created_at, g.g_id, g.g_user_title FROM user AS u LEFT JOIN '.$db->prefix.'groups AS g ON g.g_id=u.group_id WHERE u.id IN('.implode(',', $user_ids).') ORDER BY '.$sort_by.' '.$sort_dir.', u.id ASC') or error('Unable to fetch user list', __FILE__, __LINE__, $db->error());
 
 	while ($user_data = $db->fetch_assoc($result))
 	{
@@ -156,7 +156,7 @@ if ($db->num_rows($result))
 					<td class="tc2"><?php echo $user_title_field ?></td>
 <?php if ($show_post_count): ?>					<td class="tc3"><?php echo forum_number_format($user_data['num_posts']) ?></td>
 <?php endif; ?>
-					<td class="tcr"><?php echo format_time($user_data['registered'], true) ?></td>
+					<td class="tcr"><?php echo format_time($user_data['created_at'], true) ?></td>
 				</tr>
 <?php
 
