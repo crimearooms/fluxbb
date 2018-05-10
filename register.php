@@ -7,8 +7,14 @@
  */
 
 define('PUN_ROOT', dirname(__FILE__).'/');
+
 require PUN_ROOT.'include/common.php';
 
+$url = yii\helpers\Url::to(['/site/signup']);
+
+header('Location: ' . $url);
+
+exit;
 
 // If we are logged in, we shouldn't be here
 if (!$pun_user['is_guest'])

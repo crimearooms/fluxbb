@@ -70,13 +70,11 @@ class BoardComponent extends \yii\base\Component
 		return $pun_user;
 	}
 	
-	public function userRow()
+	public function load_pun_user()
 	{
 		global $db, $db_type, $pun_config, $cookie_name, $cookie_seed;
 
-		$pun_user = array();
-
-		set_default_user();
+		global $pun_user;
 
 		$id = Yii::$app->user->id;
 
@@ -114,8 +112,10 @@ class BoardComponent extends \yii\base\Component
 			$pun_user['is_guest'] = false;
 			$pun_user['is_admmod'] = $pun_user['g_id'] == PUN_ADMIN || $pun_user['g_moderator'] == '1';
 		}
-
-		return $pun_user;
+		else
+		{
+			set_default_user();
+		}
 	}
 
 }

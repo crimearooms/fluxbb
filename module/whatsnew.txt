@@ -12,3 +12,5 @@
 - удаление /forum/login.php и /forum/register.php
 - интеграция авторизации из приложения yii в форум
 - замена ссылки login.php?action=out&id=2&csrf_token=... на POST ссылку logout
+- удаление функционала смены пароля из форума
+- редирект по старым адресам авторизации login.php, register.php на новые

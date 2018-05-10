@@ -37,6 +37,9 @@ require PUN_ROOT.'lang/'.$pun_user['language'].'/profile.php';
 
 if ($action == 'change_pass')
 {
+	/*
+
+
 	if (isset($_GET['key']))
 	{
 		// If the user is already logged in we shouldn't be here :)
@@ -152,6 +155,10 @@ if ($action == 'change_pass')
 <?php
 
 	require PUN_ROOT.'footer.php';
+
+
+
+	*/
 }
 
 
@@ -1315,7 +1322,17 @@ else
 						<div class="infldset">
 							<input type="hidden" name="form_sent" value="1" />
 							<?php echo $username_field ?>
-<?php if ($pun_user['id'] == $id || $pun_user['g_id'] == PUN_ADMIN || ($user['g_moderator'] == '0' && $pun_user['g_mod_change_passwords'] == '1')): ?>							<p class="actions"><span><a href="profile.php?action=change_pass&amp;id=<?php echo $id ?>"><?php echo $lang_profile['Change pass'] ?></a></span></p>
+<?php if ($pun_user['id'] == $id || $pun_user['g_id'] == PUN_ADMIN || ($user['g_moderator'] == '0' && $pun_user['g_mod_change_passwords'] == '1')): ?>				
+
+			<p class="actions">
+
+				<?php
+
+/*
+				<span><a href="profile.php?action=change_pass&amp;id=<?php echo $id ?>"><?php echo $lang_profile['Change pass'] ?></a></span>
+*/?>
+			</p>
+
 <?php endif; ?>						</div>
 					</fieldset>
 				</div>

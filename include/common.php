@@ -1,9 +1,5 @@
 <?php
 
-define('YII_APPLICATION_RUN', false);
-
-require dirname(dirname(__DIR__)) . '/index.php';
-
 /**
  * Copyright (C) 2008-2012 FluxBB
  * based on code by Rickard Andersson copyright (C) 2002-2008 PunBB
@@ -37,6 +33,25 @@ if (isset($_SERVER['HTTP_X_MOZ']) && $_SERVER['HTTP_X_MOZ'] == 'prefetch')
 // Attempt to load the configuration file config.php
 if (file_exists(PUN_ROOT.'config.php'))
 	require PUN_ROOT.'config.php';
+
+defined('YII_DEBUG') or define('YII_DEBUG', true);
+defined('YII_ENV') or define('YII_ENV', 'dev');
+
+$dir = dirname(dirname(dirname(dirname(__DIR__))));
+
+require $dir . '/vendor/autoload.php';
+require $dir . '/vendor/yiisoft/yii2/Yii.php';
+require $dir . '/common/config/bootstrap.php';
+require $dir . '/frontend/config/bootstrap.php';
+
+$config = yii\helpers\ArrayHelper::merge(
+    require $dir . '/common/config/main.php',
+    require $dir . '/common/config/main-local.php',
+    require $dir . '/frontend/config/main.php',
+    require $dir . '/frontend/config/main-local.php'
+);
+
+$app = new yii\web\Application($config);
 
 // If we have the 1.3-legacy constant defined, define the proper 1.4 constant so we don't get an incorrect "need to install" message
 if (defined('FORUM'))
@@ -163,7 +178,9 @@ $forum_date_formats = array($pun_config['o_date_format'], 'Y-m-d', 'Y-d-m', 'd-m
 //$pun_user = array();
 //check_cookie($pun_user);
 
-$pun_user = Yii::$app->board->userRow();
+$pun_user = array();
+
+Yii::$app->board->load_pun_user();
 
 // Attempt to load the common language file
 if (file_exists(PUN_ROOT.'lang/'.$pun_user['language'].'/common.php'))

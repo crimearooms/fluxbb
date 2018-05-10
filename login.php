@@ -10,8 +10,12 @@ if (isset($_GET['action']))
 	define('PUN_QUIET_VISIT', 1);
 
 define('PUN_ROOT', dirname(__FILE__).'/');
+
 require PUN_ROOT.'include/common.php';
 
+header('Location: ' . yii\helpers\Url::to(['/site/login']));
+
+exit;
 
 // Load the login.php language file
 require PUN_ROOT.'lang/'.$pun_user['language'].'/login.php';
