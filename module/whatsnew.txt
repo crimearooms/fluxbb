@@ -5,3 +5,10 @@
 - миграция для добавления админа
 - поля registred на форуме больше нет, теперь называется created_at как в yii
 - миграция для удаления демо-топиков (чтобы не было конфликта если база юзеров была не пустая и id админа теперь другое)
+- YII_APPLICATION_RUN в /frontend/web/index.php
+- интеграция Yii фреймворка в /forum/include/common.php
+- замена ссылки login.php на  yii\helpers\Url::to(['/site/login']) в /forum/header.php
+- замена ссылки register.php на yii\helpers\Url::to(['/site/signup']) в /forum/header.php
+- удаление /forum/login.php и /forum/register.php
+- интеграция авторизации из приложения yii в форум
+- замена ссылки login.php?action=out&id=2&csrf_token=... на POST ссылку logout

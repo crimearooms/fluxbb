@@ -9,6 +9,16 @@ return [
     ...
 ];
 
+- настройте baseUrl в /frontned/config/main.php
+
+'components' => [
+    'urlManager' => [
+    	...
+    	'baseUrl' => '/',
+    	...
+    ]
+]
+
 - добавьте настройку миграций в console/config/main.php
 
 	'controllerMap' => [
@@ -16,6 +26,19 @@ return [
 			'class' => 'yii\console\controllers\MigrateController'
 		]
 	]
+	
+- настройте /frontend/web/index.php
+
+defined('YII_APPLICATION_RUN') or define('YII_APPLICATION_RUN', true);
+
+$application = new yii\web\Application($config);
+
+if (YII_APPLICATION_RUN)
+{
+	$application->run();
+}
+
+вместо (new yii\web\Application($config))->run();
 
 2. установите форум /forum/install.php
 

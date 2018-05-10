@@ -1,5 +1,9 @@
 <?php
 
+define('YII_APPLICATION_RUN', false);
+
+require dirname(dirname(__DIR__)) . '/index.php';
+
 /**
  * Copyright (C) 2008-2012 FluxBB
  * based on code by Rickard Andersson copyright (C) 2002-2008 PunBB
@@ -156,8 +160,10 @@ $forum_time_formats = array($pun_config['o_time_format'], 'H:i:s', 'H:i', 'g:i:s
 $forum_date_formats = array($pun_config['o_date_format'], 'Y-m-d', 'Y-d-m', 'd-m-Y', 'm-d-Y', 'M j Y', 'jS M Y');
 
 // Check/update/set cookie and fetch user info
-$pun_user = array();
-check_cookie($pun_user);
+//$pun_user = array();
+//check_cookie($pun_user);
+
+$pun_user = Yii::$app->board->userRow();
 
 // Attempt to load the common language file
 if (file_exists(PUN_ROOT.'lang/'.$pun_user['language'].'/common.php'))

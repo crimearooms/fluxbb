@@ -2,4 +2,13 @@
 
 Yii::setAlias('@board', dirname(__DIR__));
 
-return [];
+return [
+	'bootstrap' => [
+		'board'
+	],
+	'components' => [
+		'board' => [
+			'class' => 'board\components\BoardComponent'
+		]
+	]
+];
