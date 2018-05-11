@@ -1,11 +1,9 @@
-- пароль администратора теперь может быть 5 символов а не 6
 - таблица пользователей теперь user вместо prefix_users
 - миграция для добавления полей форума к таблице user из advanced приложения yii
 - миграция для добавления гостя
 - миграция для добавления админа
 - поля registred на форуме больше нет, теперь называется created_at как в yii
 - миграция для удаления демо-топиков (чтобы не было конфликта если база юзеров была не пустая и id админа теперь другое)
-- YII_APPLICATION_RUN в /frontend/web/index.php
 - интеграция Yii фреймворка в /forum/include/common.php
 - замена ссылки login.php на  yii\helpers\Url::to(['/site/login']) в /forum/header.php
 - замена ссылки register.php на yii\helpers\Url::to(['/site/signup']) в /forum/header.php
@@ -14,3 +12,4 @@
 - замена ссылки login.php?action=out&id=2&csrf_token=... на POST ссылку logout
 - удаление функционала смены пароля из форума
 - редирект по старым адресам авторизации login.php, register.php на новые
+- миграция для дефолтных значений group_id и timezone
