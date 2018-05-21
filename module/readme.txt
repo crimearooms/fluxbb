@@ -1,0 +1,1 @@
+За новые сообщения на форуме отвечает параметр last_visit, применяется условие topics.last_post>$pun_user['last_visit']

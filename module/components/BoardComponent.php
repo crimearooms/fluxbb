@@ -13,10 +13,6 @@ class BoardComponent extends \yii\base\Component
 
 		$now = time();
 
-		// simply fix last_visit
-
-		$db->query('UPDATE user SET last_visit=' . $now . ' WHERE id='.$pun_user['id']) or error('Unable to update user visit data', __FILE__, __LINE__, $db->error());
-
 		// Define this if you want this visit to affect the online list and the users last visit data
 		if (!defined('PUN_QUIET_VISIT'))
 		{
